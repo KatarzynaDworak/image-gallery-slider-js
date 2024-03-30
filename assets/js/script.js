@@ -1,24 +1,72 @@
+class JSSlider {
+    constructor() {
+        const imagesSelector = '.gallery__item';
+        const sliderRootSelector = '.js-slider';
+        
+        const imagesList = document.querySelectorAll(imagesSelector);
+        const sliderRootElement = document.querySelector(sliderRootSelector);
+        
+        initEvents(imagesList, sliderRootElement);
+        this.initCustomEvents(imagesList, sliderRootElement, imagesSelector);
+        this.onImageClick(event, sliderRootElement, imagesSelector);
+    }
+
+    initCustomEvents(imagesList, sliderRootElement, imagesSelector) {
+        imagesList.forEach(function (img) {
+            img.addEventListener('js-slider-img-click', function (event) {
+                JSSlider.onImageClick(event, sliderRootElement, imagesSelector);
+            });
+        });
+    
+        sliderRootElement.addEventListener('js-slider-img-next', onImageNext);
+        sliderRootElement.addEventListener('js-slider-img-prev', onImagePrev);
+        sliderRootElement.addEventListener('js-slider-close', onClose);
+    }
+
+    onImageClick(event, sliderRootElement, imagesSelector) {
+        // todo:  
+    // 1. dodać klasę [js-slider--active], aby pokazać całą sekcję
+    // 2. wyszukać ściężkę do klikniętego elementu i wstawić do [.js-slider__image]
+    // 3. pobrać nazwę grupy zapisaną w dataset klikniętego elementu
+    // 4. wyszukać wszystkie zdjęcia należące do danej grupy
+    // 5. utworzyć na podsawie elementu [.js-slider__thumbs-item--prototype] zawartość dla [.js-slider__thumbs]
+    // 6. zaznaczyć przy pomocy klasy [.js-slider__thumbs-image--current], który element jest aktualnie wyświetlany
+    sliderRootElement.classList.add('js-slider--active');
+
+    const src = event.currentTarget.querySelector('img').src;
+    sliderRootElement.querySelector('.js-slider__image').src = src;
+
+    const groupName = event.currentTarget.dataset.sliderGroupName;
+    const thumbsList = document.querySelectorAll(imagesSelector + '[data-slider-group-name=' + groupName + ']');
+    const prototype = document.querySelector('.js-slider__thumbs-item--prototype');
+    thumbsList.forEach((item) => {
+        const thumbElement = prototype.cloneNode(true);
+        thumbElement.classList.remove('js-slider__thumbs-item--prototype');
+        const thumbImg = thumbElement.querySelector('img');
+        thumbImg.src = item.querySelector('img').src;
+        if (thumbImg.src === src) {
+            thumbImg.classList.add('js-slider__thumbs-image--current');
+        }
+        
+        document.querySelector('.js-slider__thumbs').appendChild(thumbElement);
+    })
+    }
+}
+
 const init = function () {
     const imagesList = document.querySelectorAll('.gallery__item');
     imagesList.forEach(img => {
         img.dataset.sliderGroupName = Math.random() > 0.5 ? 'nice' : 'good';
     }); // za każdym przeładowaniem strony przydzielaj inną nazwę grupy dla zdjęcia
 
-    runJSSlider();
+
+    new JSSlider();
 }
 
 document.addEventListener('DOMContentLoaded', init);
 
-const runJSSlider = function () {
-    const imagesSelector = '.gallery__item';
-    const sliderRootSelector = '.js-slider';
-
-    const imagesList = document.querySelectorAll(imagesSelector);
-    const sliderRootElement = document.querySelector(sliderRootSelector);
-
-    initEvents(imagesList, sliderRootElement);
-    initCustomEvents(imagesList, sliderRootElement, imagesSelector);
-}
+// const runJSSlider = function () {
+// }
 
 const initEvents = function (imagesList, sliderRootElement) {
     imagesList.forEach(function (item) {
@@ -71,19 +119,19 @@ const fireCustomEvent = function (element, name) {
     element.dispatchEvent(event);
 }
 
-const initCustomEvents = function (imagesList, sliderRootElement, imagesSelector) {
-    imagesList.forEach(function (img) {
-        img.addEventListener('js-slider-img-click', function (event) {
-            onImageClick(event, sliderRootElement, imagesSelector);
-        });
-    });
+// const initCustomEvents = function (imagesList, sliderRootElement, imagesSelector) {
+//     imagesList.forEach(function (img) {
+//         img.addEventListener('js-slider-img-click', function (event) {
+//             JSSlider.onImageClick(event, sliderRootElement, imagesSelector);
+//         });
+//     });
 
-    sliderRootElement.addEventListener('js-slider-img-next', onImageNext);
-    sliderRootElement.addEventListener('js-slider-img-prev', onImagePrev);
-    sliderRootElement.addEventListener('js-slider-close', onClose);
-}
+//     sliderRootElement.addEventListener('js-slider-img-next', onImageNext);
+//     sliderRootElement.addEventListener('js-slider-img-prev', onImagePrev);
+//     sliderRootElement.addEventListener('js-slider-close', onClose);
+// }
 
-const onImageClick = function (event, sliderRootElement, imagesSelector) {
+// const onImageClick = function (event, sliderRootElement, imagesSelector) {
     // todo:  
     // 1. dodać klasę [js-slider--active], aby pokazać całą sekcję
     // 2. wyszukać ściężkę do klikniętego elementu i wstawić do [.js-slider__image]
@@ -91,26 +139,26 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
     // 4. wyszukać wszystkie zdjęcia należące do danej grupy
     // 5. utworzyć na podsawie elementu [.js-slider__thumbs-item--prototype] zawartość dla [.js-slider__thumbs]
     // 6. zaznaczyć przy pomocy klasy [.js-slider__thumbs-image--current], który element jest aktualnie wyświetlany
-    sliderRootElement.classList.add('js-slider--active');
+    // sliderRootElement.classList.add('js-slider--active');
 
-    const src = event.currentTarget.querySelector('img').src;
-    sliderRootElement.querySelector('.js-slider__image').src = src;
+    // const src = event.currentTarget.querySelector('img').src;
+    // sliderRootElement.querySelector('.js-slider__image').src = src;
 
-    const groupName = event.currentTarget.dataset.sliderGroupName;
-    const thumbsList = document.querySelectorAll(imagesSelector + '[data-slider-group-name=' + groupName + ']');
-    const prototype = document.querySelector('.js-slider__thumbs-item--prototype');
-    thumbsList.forEach((item) => {
-        const thumbElement = prototype.cloneNode(true);
-        thumbElement.classList.remove('js-slider__thumbs-item--prototype');
-        const thumbImg = thumbElement.querySelector('img');
-        thumbImg.src = item.querySelector('img').src;
-        if (thumbImg.src === src) {
-            thumbImg.classList.add('js-slider__thumbs-image--current');
-        }
+    // const groupName = event.currentTarget.dataset.sliderGroupName;
+    // const thumbsList = document.querySelectorAll(imagesSelector + '[data-slider-group-name=' + groupName + ']');
+    // const prototype = document.querySelector('.js-slider__thumbs-item--prototype');
+    // thumbsList.forEach((item) => {
+    //     const thumbElement = prototype.cloneNode(true);
+    //     thumbElement.classList.remove('js-slider__thumbs-item--prototype');
+    //     const thumbImg = thumbElement.querySelector('img');
+    //     thumbImg.src = item.querySelector('img').src;
+    //     if (thumbImg.src === src) {
+    //         thumbImg.classList.add('js-slider__thumbs-image--current');
+    //     }
 
-        document.querySelector('.js-slider__thumbs').appendChild(thumbElement);
-    })
-}
+    //     document.querySelector('.js-slider__thumbs').appendChild(thumbElement);
+    // })
+// }
 
 const onImageNext = function (event) {
     console.log(this, 'onImageNext');
@@ -136,6 +184,10 @@ const onImageNext = function (event) {
     }
 }
 
+// const onImageNext = require('./JSSlider');
+// const onImagePrev = require('./JSSlider');
+// const onClose = require('./JSSlider');
+
 const onImagePrev = function (event) {
     console.log(this, 'onImagePrev');
     // [this] wskazuje na element [.js-slider]
@@ -159,7 +211,6 @@ const onImagePrev = function (event) {
         current.classList.remove(currentClassName);
     }
 }
-
 const onClose = function (event) {
     // todo:
     // 1. należy usunać klasę [js-slider--active] dla [.js-slider]
@@ -169,3 +220,13 @@ const onClose = function (event) {
     const thumbsList = this.querySelectorAll('.js-slider__thumbs-item:not(.js-slider__thumbs-item--prototype)');
     thumbsList.forEach(item => item.parentElement.removeChild(item));
 }
+
+// import JSSlider from "./../modul/jsslider";
+// const init = () => {
+// constimagesList=document.querySelectorAll('.gallery__item');
+// imagesList.forEach(img=> {
+// img.dataset.sliderGroupName=Math.random() >0.5?'nice':'good';
+// });
+// constjsSlider=newJSSlider(imagesList, document.querySelector('.js-slider'))
+// };
+// document.addEventListener('DOMContentLoaded', init); (edited) 
