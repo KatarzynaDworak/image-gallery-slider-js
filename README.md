@@ -25,140 +25,139 @@
 <br />
 
 ## Solutions provided in the project
-**1. CSV File Parsing and Dynamic Content Generation** 
-The project parses a CSV file and dynamically generates a list of excursions:
 
-            const txt = `"1","Ogrodzieniec","Zamek Ogrodzieniec...","99PLN","50PLN"
-            "2","Ojców","wieś w województwie małopolskim...","40PLN","15PLN"`;
+**1. Dynamic Image Grouping**
+Images are dynamically assigned to groups labeled 'nice' or 'good' on page load, enabling flexible and varied gallery setups.
+
+            const init = () => {
+                const imagesList = document.querySelectorAll('.gallery__item');
+                imagesList.forEach(img => {
+                    img.dataset.sliderGroupName = Math.random() > 0.5 ? 'nice' : 'good';
+                });
             
-            // Function to handle file input
-            const inputElement = document.querySelector('input[type="file"]');
-            inputElement.addEventListener('change', handleFile);
-            
-            function handleFile(event) {
-                const file = event.target.files[0];
-                if (file && file.type === 'text/csv') {
-                    const reader = new FileReader();
-                    reader.readAsText(file);
-                    reader.onload = function(readerEvent) {
-                        const contents = readerEvent.target.result;
-                        const offers = contents.split(/[\r\n]+/gm);
-                        offers.forEach(function(offer) {
-                            const excursion = offer.split('\",\"'); 
-                            const excursionObj = {
-                                id: excursion[0], 
-                                name: excursion[1], 
-                                description: excursion[2], 
-                                priceAdult: excursion[3], 
-                                priceChild: excursion[4]
-                            };                 
-                            copyPrototype(excursionObj);
+                const jsSlider = new JSSlider('.gallery__item');
+                jsSlider.run();
+            }
+            document.addEventListener('DOMContentLoaded', init);
+
+**2. Seamless Image Navigation**
+Implementing navigation buttons to cycle through images in the same group, allowing users to move to the next or previous image with ease.
+
+            class JSSlider {
+                // ...
+                initEvents() {
+                    // ...
+                    const navNext = this.sliderRootElement.querySelector('.js-slider__nav--next');
+                    if (navNext) {
+                        navNext.addEventListener('click', () => {
+                            this.fireCustomEvent(this.sliderRootElement, 'js-slider-img-next');
                         });
-                    };
+                    }
+            
+                    const navPrev = this.sliderRootElement.querySelector('.js-slider__nav--prev');
+                    if (navPrev) {
+                        navPrev.addEventListener('click', () => {
+                            this.fireCustomEvent(this.sliderRootElement, 'js-slider-img-prev');
+                        });
+                    }
                 }
-            }
             
-            // Function to create and append excursion elements
-            function copyPrototype(obj) { 
-                const newLi = document.querySelector('.excursions__item--prototype').cloneNode(true);
-                newLi.style.display = 'block';
-                newLi.classList.add('excursions__item--trip');
-            
-                const title = newLi.querySelector('.excursions__title');
-                const description = newLi.querySelector('.excursions__description');
-                const priceAdult = newLi.querySelector('.excursions__price');
-                title.innerText = obj.name;
-                description.innerText = obj.description;
-                priceAdult.innerText = obj.priceAdult;
-            
-                const ulElement = document.querySelector('.excursions');
-                ulElement.appendChild(newLi);
-            
-                const forms = Array.from(document.querySelectorAll('.excursions__item--trip form'));
-                forms.map(function(form) {
-                    form.addEventListener('submit', handleSubmit);
-                });
-            }
-**2. Interactive Booking System and Real-Time Price Calculation**
-Users can select excursions and the total price is calculated in real-time:
-
-            let totalSum = 0;
-            
-            function calculateTotalPrice() {
-                const totalElement = document.querySelector('.order__total-price-value');
-                totalElement.innerText = totalSum + 'PLN';
-            }
-            
-            function handleSubmit(event) {
-                event.preventDefault();
-                const formElement = event.target;
-                const adult = parseInt(formElement.elements[0].value);
-                const child = parseInt(formElement.elements[1].value);
-            
-                const prices = formElement.querySelectorAll('.excursions__price');
-                const adultPrice = parseInt(prices[0].innerText);
-                const childPrice = parseInt(prices[1].innerText);
-            
-                const sum = (adult * adultPrice) + (child * childPrice);
-                const tripName = event.target.previousElementSibling.querySelector('h2').innerText;
-            
-                createSummaryItem(adult, child, adultPrice, childPrice, tripName, sum);
-            
-                totalSum += sum;
-                calculateTotalPrice();
-            }
-            
-            function createSummaryItem(adult, child, adultPrice, childPrice, tripName, sum) {
-                const summaryPanel = document.querySelector('.panel__summary');
-                const summaryElement = document.querySelector('.summary__item--prototype').cloneNode(true);
-                summaryElement.style.display = 'block';
-            
-                summaryElement.querySelector('.summary__prices').innerText = `dorośli: ${adult} x ${adultPrice}PLN, dzieci: ${child} x ${childPrice}PLN`;
-                summaryElement.querySelector('.summary__name').innerText = tripName;
-                summaryElement.querySelector('.summary__total-price').innerText = sum + 'PLN';
-            
-                const removeBtn = summaryElement.querySelector('.summary__btn-remove');
-                removeBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const totalPrice = parseInt(summaryElement.querySelector('.summary__total-price').innerText);
-                    totalSum -= totalPrice;
-                    calculateTotalPrice();
-                    summaryElement.remove();
-                });
-            
-                summaryPanel.appendChild(summaryElement);
-            }
-**3. Form Validation and Order Processing**
-Ensuring all fields are filled correctly and providing order confirmation:
-
-            const orderForm = document.querySelector('.order');
-            orderForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-            
-                const nameInput = document.querySelector('input[name="name"]');
-                const emailInput = document.querySelector('input[name="email"]');
-                const name = nameInput.value.trim();
-                const email = emailInput.value.trim();
-            
-                if (name === '' || email === '' || !email.includes('@')) {
-                    const errorElement = document.createElement('p');
-                    errorElement.innerText = 'Proszę uzupełnić poprawnie wymagane pola';
-                    orderForm.appendChild(errorElement);
-                } else {
-                    const totalPrice = document.querySelector('.order__total-price-value').innerText;
-                    alert(`Dziękujemy za złożenie zamówienia o wartości ${totalPrice}. Szczegóły zamówienia zostały wysłane na adres e-mail: ${email}.`);
-            
-                    nameInput.value = '';
-                    emailInput.value = '';
-            
-                    const summaryList = document.querySelector('.panel__summary');
-                    summaryList.innerHTML = '';
-            
-                    totalSum = 0;
-                    calculateTotalPrice();
+                onImageNext() {
+                    // Navigate to the next image
                 }
-            });
+            
+                onImagePrev() {
+                    // Navigate to the previous image
+                }
+                // ...
+            }
 
+**3. Custom Event Handling**
+Leveraging custom events to manage the slider's behavior, enhancing the code's modularity and maintainability.
+
+            class JSSlider {
+                // ...
+                fireCustomEvent(element, name) {
+                    const event = new CustomEvent(name, { bubbles: true });
+                    element.dispatchEvent(event);
+                }
+            
+                initCustomEvents() {
+                    this.imagesList.forEach((img) => {
+                        img.addEventListener('js-slider-img-click', (event) => {
+                            this.onImageClick(event);
+                        });
+                    });
+            
+                    this.sliderRootElement.addEventListener('js-slider-img-next', () => this.onImageNext());
+                    this.sliderRootElement.addEventListener('js-slider-img-prev', () => this.onImagePrev());
+                    this.sliderRootElement.addEventListener('js-slider-close', (event) => this.onClose(event));
+                }
+                // ...
+            }
+            
+**4. Responsive Design**
+Ensuring that the slider adapts to different screen sizes, providing a consistent and user-friendly interface across all devices.
+
+            .js-slider {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                max-width: 800px;
+                margin: auto;
+            }
+            
+**5. Enhanced User Interaction**
+Displaying the zoomed view of images on click and providing easy-to-use navigation and close functionalities.
+
+            class JSSlider {
+                // ...
+                onImageClick(event) {
+                    this.sliderRootElement.classList.add('js-slider--active');
+                    const src = event.currentTarget.querySelector('img').src;
+                    this.sliderRootElement.querySelector('.js-slider__image').src = src;
+            
+                    const groupName = event.currentTarget.dataset.sliderGroupName;
+                    const thumbsList = document.querySelectorAll(`${this.imagesSelector}[data-slider-group-name='${groupName}']`);
+                    const prototype = document.querySelector('.js-slider__thumbs-item--prototype');
+                    const thumbsContainer = document.querySelector('.js-slider__thumbs');
+                    
+                    thumbsList.forEach((item) => {
+                        const thumbElement = prototype.cloneNode(true);
+                        thumbElement.classList.remove('js-slider__thumbs-item--prototype');
+                        const thumbImg = thumbElement.querySelector('img');
+                        thumbImg.src = item.querySelector('img').src;
+                        if (thumbImg.src === src) {
+                            thumbImg.classList.add('js-slider__thumbs-image--current');
+                        }
+                        thumbsContainer.appendChild(thumbElement);
+                    });
+                }
+
+    onClose(event) {
+        this.sliderRootElement.classList.remove('js-slider--active');
+        const thumbsList = this.sliderRootElement.querySelectorAll('.js-slider__thumbs-item:not(.js-slider__thumbs-item--prototype)');
+        thumbsList.forEach(item => item.remove());
+    }
+    // ...
+}
+
+**6. Code Modularity and Reusability**
+The JSSlider class is designed to be modular and reusable, allowing for easy integration into various projects and enhancing code maintainability.
+
+            export default class JSSlider {
+                        constructor(imagesSelector) {
+                        this.imagesSelector = imagesSelector;
+                        this.sliderRootSelector = '.js-slider';
+                        this.imagesList = document.querySelectorAll(this.imagesSelector);
+                        this.sliderRootElement = document.querySelector(this.sliderRootSelector);
+                        this.initEvents();
+                        this.initCustomEvents();
+                        }
+                                        
+                        // All methods and event handlers here
+                        }
 <br />
 <br />
 
