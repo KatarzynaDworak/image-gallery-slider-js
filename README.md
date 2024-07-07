@@ -1,87 +1,195 @@
-> ⭐ ***README** to coś więcej niż opis. Poprzez nie **pokazujesz swoje mocne strony** – swoją dokładność, sposób myślenia i podejście do rozwiązywania problemów. Niech Twoje README pokaże, że masz **świetne predyspozycje do rozwoju!***
-> 
-> 🎁 *Zacznij od razu. Skorzystaj z **[szablonu README i wskazówek](https://github.com/devmentor-pl/readme-template)**.* 
+# Thanks for viewing my Project ✨
 
-&nbsp;
+![ a main page screenshot](./screen.png)
+<br />
 
+## :star: Demonstration of the Project: ([Excursion Booking JS](https://katarzynadworak.github.io/excursion-booking-js/))
+**Important: To test the project, load the example.csv file.**
+<br />
+<br />
 
-# JavaScript: ECMAScript 2015+ 
+## Main goal of my work was to:
 
-Twój poprzednik stworzył pokaz slajdów, który masz przebudować. Wykorzystaj w tym celu najnowsze standardy języka JavaScript.
+**1. Dynamic Image Grouping**: automatically assign images to random groups upon page load to create a dynamic and interactive gallery experience.
 
-Utwórz klasę będąca modułem – niech reprezentuje nasz slider. Umieść ją w osobnym pliku, który zaimportujesz w odpowiednim miejscu (pamiętaj również o eksporcie tej klasy).
+**2. Seamless Image Navigation**: implement next and previous navigation functionalities for easy browsing through grouped images.
 
-Wszędzie, gdzie to możliwe, wykorzystuj rozwiązania poznane w ostatnio przerabianym materiale: destrukturyzację, rozproszenie, wartości domyślne, funkcje strzałkowe itp.
+**3. Custom Event Handling**: utilize custom events to manage interactions, ensuring a modular and scalable codebase.
 
-Pamiętaj o odpowiednim nazywaniu metod w klasie. Im bardziej jednoznacznie nazwa określa sposób działania funkcji, tym lepiej.
+**4. Responsive Design**: ensure the slider works smoothly on various screen sizes, providing an optimal user experience across devices.
 
-Każda metoda powinna realizować jedno zadanie ([zasada pojedynczej odpowiedzialności](https://pl.wikipedia.org/wiki/Zasada_jednej_odpowiedzialno%C5%9Bci)). Jeśli tak nie jest, spróbują ją podzielić na mniejsze części.
+**5. Enhanced User Interaction**: display a zoomed view of images on click and allow users to easily close the slider, enhancing user engagement.
 
-Wykorzystaj webpacka, aby napisany kod JavaScript był wspierany przez starsze przeglądarki, tj. wszystkie wydane np. po 2016 roku i posiadające udział w rynku na poziomie co najmniej 1%.
+**6. Code Modularity and Reusability**: develop the slider as a modular class to promote reusability and ease of integration into different projects.
 
-**Uwaga:** Jeżeli po instalacji potrzebnych paczek uruchomiłeś projekt, lecz obrazy nie wczytują się, to prawdopodobnie zainstalowałeś webpack-dev-server w wersji powyżej 4. Wówczas wystarczy, że w pliku `webpack.config.js` określisz miejsce, z którego grafiki mają być serwowane. Możesz to zrobić przy pomocy tego ustawienia: 
-```
-const path = require('path');
-module.exports = {
-    // ...
-    devServer: {
-        static: './',
-    },
-}
-```
-Szczegóły znajdziesz w [dokumentacji webpacka](https://webpack.js.org/configuration/dev-server/#devserverstatic).
+<br />
 
-## Implementacja
+## Solutions provided in the project
+**1. CSV File Parsing and Dynamic Content Generation** 
+The project parses a CSV file and dynamically generates a list of excursions:
 
-W plikach znajdziesz kod implementujący slider oraz nieusunięte komentarze, które miały ułatwić zbudowanie odpowiedniej logiki.
+            const txt = `"1","Ogrodzieniec","Zamek Ogrodzieniec...","99PLN","50PLN"
+            "2","Ojców","wieś w województwie małopolskim...","40PLN","15PLN"`;
+            
+            // Function to handle file input
+            const inputElement = document.querySelector('input[type="file"]');
+            inputElement.addEventListener('change', handleFile);
+            
+            function handleFile(event) {
+                const file = event.target.files[0];
+                if (file && file.type === 'text/csv') {
+                    const reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.onload = function(readerEvent) {
+                        const contents = readerEvent.target.result;
+                        const offers = contents.split(/[\r\n]+/gm);
+                        offers.forEach(function(offer) {
+                            const excursion = offer.split('\",\"'); 
+                            const excursionObj = {
+                                id: excursion[0], 
+                                name: excursion[1], 
+                                description: excursion[2], 
+                                priceAdult: excursion[3], 
+                                priceChild: excursion[4]
+                            };                 
+                            copyPrototype(excursionObj);
+                        });
+                    };
+                }
+            }
+            
+            // Function to create and append excursion elements
+            function copyPrototype(obj) { 
+                const newLi = document.querySelector('.excursions__item--prototype').cloneNode(true);
+                newLi.style.display = 'block';
+                newLi.classList.add('excursions__item--trip');
+            
+                const title = newLi.querySelector('.excursions__title');
+                const description = newLi.querySelector('.excursions__description');
+                const priceAdult = newLi.querySelector('.excursions__price');
+                title.innerText = obj.name;
+                description.innerText = obj.description;
+                priceAdult.innerText = obj.priceAdult;
+            
+                const ulElement = document.querySelector('.excursions');
+                ulElement.appendChild(newLi);
+            
+                const forms = Array.from(document.querySelectorAll('.excursions__item--trip form'));
+                forms.map(function(form) {
+                    form.addEventListener('submit', handleSubmit);
+                });
+            }
+**2. Interactive Booking System and Real-Time Price Calculation**
+Users can select excursions and the total price is calculated in real-time:
 
-Zadanie ma być wykonane w taki sposób, aby poniższy kod uruchamiał całą mechanikę rozwiązania:
+            let totalSum = 0;
+            
+            function calculateTotalPrice() {
+                const totalElement = document.querySelector('.order__total-price-value');
+                totalElement.innerText = totalSum + 'PLN';
+            }
+            
+            function handleSubmit(event) {
+                event.preventDefault();
+                const formElement = event.target;
+                const adult = parseInt(formElement.elements[0].value);
+                const child = parseInt(formElement.elements[1].value);
+            
+                const prices = formElement.querySelectorAll('.excursions__price');
+                const adultPrice = parseInt(prices[0].innerText);
+                const childPrice = parseInt(prices[1].innerText);
+            
+                const sum = (adult * adultPrice) + (child * childPrice);
+                const tripName = event.target.previousElementSibling.querySelector('h2').innerText;
+            
+                createSummaryItem(adult, child, adultPrice, childPrice, tripName, sum);
+            
+                totalSum += sum;
+                calculateTotalPrice();
+            }
+            
+            function createSummaryItem(adult, child, adultPrice, childPrice, tripName, sum) {
+                const summaryPanel = document.querySelector('.panel__summary');
+                const summaryElement = document.querySelector('.summary__item--prototype').cloneNode(true);
+                summaryElement.style.display = 'block';
+            
+                summaryElement.querySelector('.summary__prices').innerText = `dorośli: ${adult} x ${adultPrice}PLN, dzieci: ${child} x ${childPrice}PLN`;
+                summaryElement.querySelector('.summary__name').innerText = tripName;
+                summaryElement.querySelector('.summary__total-price').innerText = sum + 'PLN';
+            
+                const removeBtn = summaryElement.querySelector('.summary__btn-remove');
+                removeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const totalPrice = parseInt(summaryElement.querySelector('.summary__total-price').innerText);
+                    totalSum -= totalPrice;
+                    calculateTotalPrice();
+                    summaryElement.remove();
+                });
+            
+                summaryPanel.appendChild(summaryElement);
+            }
+**3. Form Validation and Order Processing**
+Ensuring all fields are filled correctly and providing order confirmation:
 
-```javascript
-import JSSlider from './modules/JSSlider';
+            const orderForm = document.querySelector('.order');
+            orderForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+            
+                const nameInput = document.querySelector('input[name="name"]');
+                const emailInput = document.querySelector('input[name="email"]');
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+            
+                if (name === '' || email === '' || !email.includes('@')) {
+                    const errorElement = document.createElement('p');
+                    errorElement.innerText = 'Proszę uzupełnić poprawnie wymagane pola';
+                    orderForm.appendChild(errorElement);
+                } else {
+                    const totalPrice = document.querySelector('.order__total-price-value').innerText;
+                    alert(`Dziękujemy za złożenie zamówienia o wartości ${totalPrice}. Szczegóły zamówienia zostały wysłane na adres e-mail: ${email}.`);
+            
+                    nameInput.value = '';
+                    emailInput.value = '';
+            
+                    const summaryList = document.querySelector('.panel__summary');
+                    summaryList.innerHTML = '';
+            
+                    totalSum = 0;
+                    calculateTotalPrice();
+                }
+            });
 
-const init = () => {
-    const imagesList = document.querySelectorAll('.gallery__item');
-    imagesList.forEach( img => {
-        img.dataset.sliderGroupName = Math.random() > 0.5 ? 'nice' : 'good';
-    });
+<br />
+<br />
 
-    const jsSlider = new JSSlider('.gallery__item');
-    jsSlider.run();
-}
+## 🛠️ Languages and Tools used: 
 
-document.addEventListener('DOMContentLoaded', init);
-```
+<img align="left" alt="JavaScript" width="50px" src="https://raw.githubusercontent.com/github/explore/379d8d145b878a5b7a1c2a5b5800b1d82d5c8c8f/topics/javascript/javascript.png" />
 
-Najlepiej zbudować klasę `JSSlider` od zera. Należy stopniowo przenosić poszczególne rozwiązania z funkcji w pliku `script.js` do metod danej klasy.
+<img align="left" alt="HTML5" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/html/html.png" />
 
-Pamiętaj, że im częściej będziesz sprawdzać przenoszony kod, tym łatwiej będzie Ci się w nim odnaleźć.
+<img align="left" alt="CSS3" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/css/css.png" />
 
-Kiedy już przeniesiesz rozwiązania 1 do 1 i wszystko będzie działać, wykonaj [refaktoryzację kodu](https://pl.wikipedia.org/wiki/Refaktoryzacja).
+<img align="left" alt="Git" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/git/git.png" />
 
-## Zadania dodatkowe
+<img align="left" alt="GitHub" width="50px" src="https://raw.githubusercontent.com/github/explore/78df643247d429f6cc873026c0622819ad797942/topics/github/github.png" />
 
-### Zadanie 1
+<img align="left" alt="Terminal" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/terminal/terminal.png" />
 
-Postaraj się wykorzystać właściwości obiektu (`this.imagesList`), zamiast przekazywać wartości zmiennych przez parametry funkcji (`initEvents(imagesList, sliderRootElement)`).
+<img align="left" alt="Visual Studio Code" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/visual-studio-code/visual-studio-code.png" />
 
-To rozwiązanie zastosuj tylko dla zmiennych, które są wykorzystywane w różnych metodach.
+<br />
+<br />
+<br />
+<br />
 
-### Zadanie 2
+## :blue_heart:  You can find me on:
+<br/>
 
-Utwórz dwa dodatkowe CustomEvents o nazwach `js-slider-start` oraz `js-slider-stop`. Ich zadaniem będzie uruchomienie lub zatrzymanie automatycznego przełączania zdjęć.
+[<img align="left" alt="Katarzyna Dworak LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/katarzynadworakk/)
 
-Zdarzenie `js-slider-start` jest uruchamiane w dwóch przypadkach:
-- po kliknięciu w zdjęcie,
-- po zjechaniu kursorem ze strzałki.
+ 
+<br />
 
-Zdarzenie `js-slider-stop` jest uruchamiane, gdy użytkownik najedzie kursorem na strzałkę.
-
-**Uwaga!** Sprawdź, czy wszystko działa poprawnie, gdy pokaz slajdów jest uruchamiany i zatrzymywany wielokrotnie.
-
-
-&nbsp;
-
-> ⭐ ***README** to coś więcej niż opis. Poprzez nie **pokazujesz swoje mocne strony** – swoją dokładność, sposób myślenia i podejście do rozwiązywania problemów. Niech Twoje README pokaże, że masz **świetne predyspozycje do rozwoju!***
-> 
-> 🎁 *Zacznij od razu. Skorzystaj z **[szablonu README i wskazówek](https://github.com/devmentor-pl/readme-template)**.* 
+### Thanks
+To my Mentor - devmentor.pl – for creating the task and for the code review.
