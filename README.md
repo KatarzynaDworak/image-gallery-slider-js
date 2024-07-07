@@ -3,13 +3,11 @@
 ![ a main page screenshot](./screen.png)
 <br />
 
-## :star: Demonstration of the Project: ([Image Gallery Slider JS](https://katarzynadworak.github.io/image-gallery-slider-js/))
-
-**Implementation:**
+## :star: **Implementation:**
 Instal webpack:
 1. Insert comend in terminal: npm i
 2. Then insert comend in terminal to start webpack: npm start
-3. 
+
 <br />
 <br />
 
