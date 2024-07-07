@@ -3,7 +3,7 @@
 ![ a main page screenshot](./screen.png)
 <br />
 
-## :star: Demonstration of the Project: ([Image Gallery Slider JS](https://katarzynadworak.github.io/image-gallery-slider-js/)
+## :star: Demonstration of the Project: ([Image Gallery Slider JS](https://katarzynadworak.github.io/image-gallery-slider-js/))
 
 **Implementation:**
 Instal webpack:
