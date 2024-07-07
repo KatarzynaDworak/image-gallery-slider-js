@@ -3,8 +3,13 @@
 ![ a main page screenshot](./screen.png)
 <br />
 
-## :star: Demonstration of the Project: ([Excursion Booking JS](https://katarzynadworak.github.io/excursion-booking-js/))
-**Important: To test the project, load the example.csv file.**
+## :star: Demonstration of the Project: ([Image Gallery Slider JS](https://katarzynadworak.github.io/image-gallery-slider-js/)
+
+**Implementation:**
+Instal webpack:
+1. Insert comend in terminal: npm i
+2. Then insert comend in terminal to start webpack: npm start
+3. 
 <br />
 <br />
 
