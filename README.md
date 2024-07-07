@@ -1,6 +1,6 @@
 # Thanks for viewing my Project ✨
 
-![ a main page screenshot](./screen.png) ADD SCREEN
+![ADD SCREEN](./screen.png) 
 <br />
 
 ## :star: **Implementation:**
