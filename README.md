@@ -4,9 +4,16 @@
 <br />
 
 ## :star: **Implementation:**
-Instal webpack:
-1. Insert comend in terminal: npm i
-2. Then insert comend in terminal to start webpack: npm start
+In this project, I used Webpack. It has additional configuration.
+
+To install Webpack, run:
+
+
+            npm install
+
+After that, you can start the project by running:
+
+            npm start
 
 <br />
 <br />
