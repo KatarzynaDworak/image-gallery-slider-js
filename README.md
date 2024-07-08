@@ -4,17 +4,15 @@
 <br />
 
 ## :star: **Implementation:**
-In this project, I used Webpack. It has additional configuration.
+The project uses [Webpack](https://webpack.js.org/) and [npm](https://www.npmjs.com/). To run the app on your machine you should install all dependencies. Then create a localhost port and run your web explorer.
 
-To install Webpack, run:
+Let's start with installing all dependencies. Move to the app main workspace and run:
 
+            npm i
 
-            npm install
-
-After that, you can start the project by running:
+To create a localhost port you should type:
 
             npm start
-
 <br />
 <br />
 
