@@ -173,7 +173,7 @@ The JSSlider class is designed to be modular and reusable, allowing for easy int
 
 ## 🛠️ Languages and Tools used: 
 
-<img align="left" alt="JavaScript" width="50px" src="https://raw.githubusercontent.com/github/explore/379d8d145b878a5b7a1c2a5b5800b1d82d5c8c8f/topics/javascript/javascript.png" />
+<img align="left" alt="JavaScript" width="50px" src="https://raw.githubusercontent.com/github/explore/main/topics/javascript/javascript.png" />
 
 <img align="left" alt="HTML5" width="50px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/html/html.png" />
 
@@ -192,13 +192,15 @@ The JSSlider class is designed to be modular and reusable, allowing for easy int
 <br />
 <br />
 
-## :blue_heart:  You can find me on:
-<br/>
+## :blue_heart:  You can find me on: 
+<br />
 
-[<img align="left" alt="Katarzyna Dworak LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/katarzynadworakk/)
+[<img align="left" alt="Katarzyna Dworak LinkedIn" width="40px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />](https://www.linkedin.com/in/katarzynadworakk/)
 
- 
+<br /> 
 <br />
 
 ### Thanks
-To my Mentor - devmentor.pl – for creating the task and for the code review.
+To my Mentor - [devmentor.pl](https://devmentor.pl/) – for creating the task and for the code review.
+
+If you have any questions feel free to get in touch with me (contact in the [profile readme](https://github.com/katarzynadworak)).
