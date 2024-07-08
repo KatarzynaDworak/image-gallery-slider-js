@@ -1,7 +1,5 @@
 # Thanks for viewing my Project ✨
 
-![ADD SCREEN](./screen.png) 
-
 https://github.com/KatarzynaDworak/image-gallery-slider-js/assets/147186733/c5bad590-d10a-484e-b37e-a2d7e23a4d27
 
 
